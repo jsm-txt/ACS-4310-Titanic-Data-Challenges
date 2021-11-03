@@ -25,7 +25,22 @@
 // Or if property = 'age' -> [40, 26, 22, 28, 23, 45, 21, ...]
 
 const getAllValuesForProperty = (data, property) => {
-	return []
+	const newArr = data.map(data => data.fields)
+	const filter = newArr.map(data =>{
+		if(property === 'fare'){
+			return data.fare
+		}
+		if(property === 'age'){
+			return data.age
+		}
+		if(property === 'pclass'){
+			return data.pclass
+		}
+		if(property === 'embarked'){
+			return data.embarked 
+		}
+	})
+	return filter
 }
 
 // 2 -------------------------------------------------------------
@@ -34,7 +49,9 @@ const getAllValuesForProperty = (data, property) => {
 // array of all the male passengers [{...}, {...}, {...}, ...]
 
 const filterByProperty = (data, property, value) => {
-	return []
+
+	const filter = data.filter(data => data.fields.sex === value)
+	return filter
 }
 
 // 3 -------------------------------------------------------------
@@ -43,7 +60,20 @@ const filterByProperty = (data, property, value) => {
 // given property have been removed
 
 const filterNullForProperty = (data, property) => {
-	return []
+	let returnArr = null
+	if(property === 'fare'){
+		returnArr= data.filter(p => p.fields.fare !== undefined)
+	}
+	if(property === 'age'){
+		returnArr= data.filter(p => p.fields.age !== undefined)
+	}
+	if(property === 'pclass'){
+		returnArr= data.filter(p => p.fields.pclass !== undefined)
+	}
+	if(property === 'embarked'){
+		returnArr= data.filter(p => p.fields.embarked !== undefined)
+	}
+	return returnArr
 }
 
 // 4 -------------------------------------------------------------
@@ -52,7 +82,14 @@ const filterNullForProperty = (data, property) => {
 // Return the total of all values for a given property. This
 
 const sumAllProperty = (data, property) => {
-	return 0
+	let sum = 0
+	if (property === 'age') {
+		sum = data.reduce((acc, p) => p.fields.age !== undefined ? acc + p.fields.age : acc, 0)
+	} else {
+		sum = data.reduce((acc, p) => p.fields.fare !== undefined ? acc + p.fields.fare : acc, 0)
+
+	}
+	return sum
 }
 
 
@@ -67,7 +104,38 @@ const sumAllProperty = (data, property) => {
 // at Cherbourg, 77 emabrked at Queenstown, and 2 are undedfined
 
 const countAllProperty = (data, property) => {
-	return {}
+	let counts = null
+	if (property === 'embarked'){
+		counts = data.reduce((acc, p) => {
+			if (acc[p.fields.embarked] === undefined) {
+				acc[p.fields.embarked] = 1
+			} else {
+				acc[p.fields.embarked] += 1
+			}
+			return acc
+		}, {})
+	}
+	if (property === 'sex'){
+		counts = data.reduce((acc, p) => {
+			if (acc[p.fields.sex] === undefined) {
+				acc[p.fields.sex] = 1
+			} else {
+				acc[p.fields.sex] += 1
+			}
+			return acc
+		}, {})
+	}
+	if (property === 'pclass'){
+		counts = data.reduce((acc, p) => {
+			if (acc[p.fields.pclass] === undefined) {
+				acc[p.fields.pclass] = 1
+			} else {
+				acc[p.fields.pclass] += 1
+			}
+			return acc
+		}, {})
+	}
+	return counts
 }
 
 
@@ -77,7 +145,29 @@ const countAllProperty = (data, property) => {
 // of items in each bucket.
 
 const makeHistogram = (data, property, step) => {
-	return []
+	let histogram = null
+	if (property === 'age') {
+		histogram = data.filter(p => p.fields.age !== undefined).reduce((acc, p) => {
+			if (acc[Math.floor(p.fields.age / step)] === undefined) {
+				acc[Math.floor(p.fields.age / step)] = 1
+			} else {
+				acc[Math.floor(p.fields.age / step)] += 1
+			}
+			return acc
+		}, [])
+	}
+	if (property === 'fare') {
+		histogram = data.filter(p => p.fields.fare !== undefined).reduce((acc, p) => {
+			if (acc[Math.floor(p.fields.fare / step)] === undefined) {
+				acc[Math.floor(p.fields.fare / step)] = 1
+			} else {
+				acc[Math.floor(p.fields.fare / step)] += 1
+			}
+			return acc
+		}, [])
+	}
+
+	return histogram
 }
 
 // 7 ------------------------------------------------------------
@@ -86,7 +176,19 @@ const makeHistogram = (data, property, step) => {
 // to divide each value by the maximum value in the array.
 
 const normalizeProperty = (data, property) => {
-	return []
+	let normalizedValues = null
+	if (property === 'age') {
+		const ages = data.filter(p => p.fields.age !== undefined).map(p => p.fields.age)
+		const maxAge = Math.max(...ages)
+		normalizedValues = ages.map(v => v / maxAge)
+	}
+	if (property === 'fare') {
+		const fares = data.map(p => p.fields.fare)
+		const maxFare = Math.max(...fares)
+		normalizedValues = fares.map(v => v / maxFare)
+		
+	}
+	return normalizedValues
 }
 
 // 8 ------------------------------------------------------------
@@ -97,7 +199,20 @@ const normalizeProperty = (data, property) => {
 // would return ['male', 'female']
 
 const getUniqueValues = (data, property) => {
-	return []
+	let values = null
+	if(property === 'sex'){
+		values = Object.values(data.fields.sex)
+	}
+	if(property === 'pclass'){
+		const newArr = data.filter(p => p.fields.pclass !== undefined)
+		values = Object.values(newArr.fields.pclass)
+	}
+	if(property === 'embarked'){
+		values = Object.values(data.fields.embarked)
+	}
+	if(property === 'survived'){
+		values = Object.values(data.fields.survived)
+	}
 }
 
 // --------------------------------------------------------------
